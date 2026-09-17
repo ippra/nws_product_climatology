@@ -39,7 +39,7 @@ The other analyses in this folder (`outlooks_data/`, `extended_outlooks_data/`,
 - **Share and export.** The address bar always holds the current view. Save
   the map as a PNG with title, legend and credits, or download the table
   behind it as CSV.
-- Light and dark base maps; the panel follows the system theme.
+- Light, dark and satellite base maps; the panel follows the system theme.
 
 ## The pipeline
 
@@ -259,8 +259,10 @@ custom protocol (`nacgrid://`): each tile pixel is projected into the grid's
 Albers coordinates and takes its cell's color, so cell edges stay exact at
 every zoom. Browsers inflate the files with `DecompressionStream`.
 
-The only third-party requests are CARTO base map tiles. If they fail, the
-counties still draw on a plain background.
+The only third-party requests are base map tiles: CARTO for the light and
+dark maps and all labels, Esri World Imagery for satellite. If they fail, the
+counties still draw on a plain background. Over imagery the colors run darkest
+for the most, as on the light map, with the fills partly transparent.
 
 ## Hosting
 

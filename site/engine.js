@@ -53,11 +53,52 @@ const PALETTE = {
     sub: "#c3c2b7",
   },
 };
+// Over imagery, whose ground is mid-toned, the light map's ramp (darkest for
+// the most) reads better than the dark map's, which washes to a pale veil over
+// busy areas; lines and outlines stay light to show against the photo.
+PALETTE.satellite = {
+  ...PALETTE.dark,
+  ramp: PALETTE.light.ramp,
+  countyLine: "rgba(255,255,255,0.3)",
+  officeLine: "rgba(255,255,255,0.6)",
+  stateLine: "rgba(255,255,255,0.85)",
+  selected: "#ff8fab",
+};
 
 const CARTO = "https://basemaps.cartocdn.com/gl/";
 const BASEMAPS = {
   light: { label: "Light", tone: "light", style: CARTO + "positron-gl-style/style.json" },
   dark: { label: "Dark", tone: "dark", style: CARTO + "dark-matter-gl-style/style.json" },
+  // Imagery with labels on top, as in ok_fire_dash, with its own palette and
+  // fills that let some of the ground through.
+  satellite: {
+    label: "Satellite",
+    tone: "satellite",
+    opacity: 0.72,
+    credit: "Imagery © Esri, Maxar, Earthstar Geographics · Labels © CARTO, OpenStreetMap",
+    style: {
+      version: 8,
+      sources: {
+        imagery: {
+          type: "raster",
+          tiles: ["https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"],
+          tileSize: 256,
+          maxzoom: 19,
+          attribution: "Imagery &copy; Esri, Maxar, Earthstar Geographics",
+        },
+        labels: {
+          type: "raster",
+          tiles: ["https://basemaps.cartocdn.com/rastertiles/dark_only_labels/{z}/{x}/{y}.png"],
+          tileSize: 256,
+          attribution: "&copy; OpenStreetMap contributors &copy; CARTO",
+        },
+      },
+      layers: [
+        { id: "imagery", type: "raster", source: "imagery" },
+        { id: "sat-labels", type: "raster", source: "labels" },
+      ],
+    },
+  },
 };
 
 const REGIONS = [
@@ -733,18 +774,18 @@ function addOverlays() {
   if (map.getSource("nac-counties")) return;
   const P = PALETTE[tone()];
   const layers = map.getStyle().layers;
-  const firstSymbol = layers.find((l) => l.type === "symbol");
+  const firstSymbol = layers.find((l) => l.type === "symbol" || l.id === "sat-labels");
   const before = firstSymbol ? firstSymbol.id : undefined;
 
   map.addSource("nac-counties", { type: "geojson", data: countyGeo, promoteId: "i" });
   map.addSource("nac-offices", { type: "geojson", data: officeGeo, promoteId: "i" });
   map.addSource("nac-states", { type: "geojson", data: stateGeo });
 
-  map.addLayer({ id: "county-fill", type: "fill", source: "nac-counties", paint: { "fill-color": fillColor(P), "fill-opacity": 0.9 } }, before);
+  map.addLayer({ id: "county-fill", type: "fill", source: "nac-counties", paint: { "fill-color": fillColor(P), "fill-opacity": BASEMAPS[state.basemap].opacity ?? 0.9 } }, before);
   map.addSource("nac-grid", { type: "raster", tiles: [gridTileUrl()], tileSize: 256, maxzoom: 14 });
-  map.addLayer({ id: "grid-cells", type: "raster", source: "nac-grid", layout: { visibility: "none" }, paint: { "raster-opacity": 0.92, "raster-resampling": "nearest", "raster-fade-duration": 0 } }, before);
+  map.addLayer({ id: "grid-cells", type: "raster", source: "nac-grid", layout: { visibility: "none" }, paint: { "raster-opacity": BASEMAPS[state.basemap].opacity ?? 0.92, "raster-resampling": "nearest", "raster-fade-duration": 0 } }, before);
   map.addLayer({ id: "county-line", type: "line", source: "nac-counties", minzoom: 3.2, paint: { "line-color": P.countyLine, "line-width": ["interpolate", ["linear"], ["zoom"], 3.2, 0.2, 7, 0.8] } }, before);
-  map.addLayer({ id: "office-fill", type: "fill", source: "nac-offices", paint: { "fill-color": fillColor(P), "fill-opacity": 0.9 } }, before);
+  map.addLayer({ id: "office-fill", type: "fill", source: "nac-offices", paint: { "fill-color": fillColor(P), "fill-opacity": BASEMAPS[state.basemap].opacity ?? 0.9 } }, before);
   map.addLayer({ id: "office-line", type: "line", source: "nac-offices", paint: { "line-color": P.officeLine, "line-width": 0.9 } }, before);
   map.addLayer({ id: "state-line", type: "line", source: "nac-states", paint: { "line-color": P.stateLine, "line-width": ["interpolate", ["linear"], ["zoom"], 3, 0.6, 7, 1.6] } }, before);
   map.addLayer({ id: "county-hover", type: "line", source: "nac-counties", paint: { "line-color": P.hover, "line-width": 1.6, "line-opacity": ["case", ["boolean", ["feature-state", "hover"], false], 1, 0] } });
@@ -1842,7 +1883,8 @@ function savePng() {
       ctx.fillText(c === 0 ? ">0" : fmtRate(breaks[c - 1]), 16 * dpr + c * (sw + 2 * dpr), y0 + sh + 12 * dpr);
     }
     ctx.textAlign = "right";
-    ctx.fillText("Data: NWS via Iowa Environmental Mesonet · IPPRA, University of Oklahoma · Base map © CARTO, OpenStreetMap", out.width - 16 * dpr, out.height - 10 * dpr);
+    const credit = BASEMAPS[state.basemap].credit || "Base map © CARTO, OpenStreetMap";
+    ctx.fillText(`Data: NWS via Iowa Environmental Mesonet · IPPRA, University of Oklahoma · ${credit}`, out.width - 16 * dpr, out.height - 10 * dpr);
     out.toBlob((blob) => saveBlob(blob, `nws_${p.id.replace(".", "_")}_${state.measure}_${yearLabel().replace("–", "-")}.png`));
   });
   map.triggerRepaint();
