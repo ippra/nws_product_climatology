@@ -190,7 +190,6 @@ window.addEventListener("load", function () { setTimeout(function () {
       <div class="regions" id="regions" role="group" aria-label="Jump to region"></div>
       <div class="basemaps" id="basemaps" role="radiogroup" aria-label="Base map"></div>
     </div>
-    <div id="map-key" class="map-key" aria-live="polite" hidden></div>
     <div id="hover-tip" class="tip map-tip" hidden></div>
 
     <aside id="card" class="card" aria-live="polite" hidden>
@@ -216,6 +215,7 @@ window.addEventListener("load", function () { setTimeout(function () {
     </aside>
 
     <section id="timeline-wrap" aria-label="Timeline">
+      <div id="map-key" class="map-key" aria-live="polite" hidden></div>
       <div class="timeline-head">
         <span class="timeline-title" id="timeline-title">Alerts issued per month</span>
         <span class="timeline-hint">Drag to choose years</span>
