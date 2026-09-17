@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+// Some static handlers serve /alerts without adding the trailing slash, which
+// breaks every relative URL in this page. Canonicalize first.
+(function(){var p=location.pathname;
+if(!/\/$/.test(p)&&!/\.html$/.test(p)){location.replace(p+"/"+location.search+location.hash);}})();
+</script>
+<title>NWS Alert Climatology — Watches, Warnings and Advisories by County</title>
+<meta name="description" content="How often the National Weather Service puts each U.S. county under every kind of watch, warning and advisory, 2010 to 2025.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='3' y='3' width='12' height='12' rx='2' fill='%239ec5f4'/%3E%3Crect x='17' y='3' width='12' height='12' rx='2' fill='%233987e5'/%3E%3Crect x='3' y='17' width='12' height='12' rx='2' fill='%23184f95'/%3E%3Crect x='17' y='17' width='12' height='12' rx='2' fill='%230d366b'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="./assets/vendor/maplibre-gl-6.10.0/maplibre-gl.css">
+<link rel="stylesheet" href="./engine.css?v=__BUILD__">
+<script>
+window.NAC_BUILD = "__BUILD__";
+// Watchdog: if the app never leaves the loading screen, say what failed rather
+// than leaving a blank map.
+window.__nacFailed = [];
+window.addEventListener("error", function (e) {
+  var t = e && e.target;
+  if (t && (t.src || t.href)) { window.__nacFailed.push(t.src || t.href); }
+  else { window.__nacErr = (e && e.message) || String(e); }
+}, true);
+window.addEventListener("unhandledrejection", function (e) {
+  window.__nacErr = "async: " + ((e.reason && e.reason.message) || e.reason);
+});
+window.addEventListener("load", function () { setTimeout(function () {
+  var l = document.getElementById("boot");
+  if (!l || l.hidden) return;
+  var d = ["engine.js executed: " + (window.NAC_ENGINE_LOADED ? "yes" : "NO")];
+  if (window.__nacFailed.length) d.push("failed to load: " + window.__nacFailed.join(", "));
+  if (window.__nacErr) d.push("error: " + window.__nacErr);
+  l.textContent = "The map failed to start.\n\nDiagnostics (please send these to the maintainers):\n" +
+    d.join("\n") + "\nbuild " + window.NAC_BUILD + " — " + navigator.userAgent;
+  l.classList.add("boot-failed");
+}, 10000); });
+</script>
+</head>
+<body>
+<!-- The IPPRA institutional bar, shared with every IPPRA dashboard. Static
+     markup so it paints with the page; see fusion_dash/site/index.html for why
+     it has two modes. -->
+<div id="ippra-bar">
+  <a class="ippra-bar-home" href="https://ippra.net">IPPRA &middot; University of Oklahoma</a>
+  <a class="ippra-bar-back" href="https://ippra.net"><span aria-hidden="true">&larr;</span> Back to IPPRA</a>
+</div>
+<script>
+(function () {
+  var root = document.documentElement;
+  // Only ever return to a path on this origin: an absolute destination would
+  // make this an open redirect.
+  function safePath(p) {
+    return (typeof p === "string" && p.charAt(0) === "/" &&
+            p.charAt(1) !== "/" && p.charAt(1) !== "\\") ? p : null;
+  }
+  var back = null;
+  try {
+    back = safePath(new URLSearchParams(location.search).get("from"));
+    if (!back && document.referrer) {
+      var r = new URL(document.referrer);
+      if (r.origin === location.origin &&
+          r.pathname.replace(/\/+$/, "") !== location.pathname.replace(/\/+$/, "")) {
+        back = r.pathname + r.search;
+      }
+    }
+  } catch (e) { /* malformed referrer: keep the institutional link */ }
+
+  if (back) {
+    root.setAttribute("data-entry", "referred");
+    var backLink = document.querySelector(".ippra-bar-back");
+    backLink.setAttribute("href", back);
+    // Links from ippra.net open a new tab, so "back" means closing it. close()
+    // is refused silently once the tab has history, hence the fallback timer.
+    backLink.addEventListener("click", function (ev) {
+      if (ev.button !== 0 || ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey) return;
+      ev.preventDefault();
+      var href = backLink.getAttribute("href");
+      window.close();
+      setTimeout(function () { location.href = href; }, 150);
+    });
+    if (window.history && history.replaceState && /[?&]from=/.test(location.search)) {
+      var q = new URLSearchParams(location.search);
+      q.delete("from");
+      var qs = q.toString();
+      history.replaceState(null, "", location.pathname + (qs ? "?" + qs : "") + location.hash);
+    }
+  }
+})();
+</script>
+
+<div id="shell">
+  <aside id="panel" aria-label="Controls and summary">
+    <header class="panel-head">
+      <h1>NWS Alert Climatology</h1>
+      <p class="lede">How often the National Weather Service puts each county under every kind of watch, warning and advisory</p>
+      <p class="freshness" id="freshness"><span class="live-dot" aria-hidden="true"></span><span id="freshness-text">Loading&hellip;</span></p>
+    </header>
+
+    <section class="block" aria-labelledby="h-alert">
+      <h2 id="h-alert">Alert</h2>
+      <div class="picker" id="picker">
+        <button type="button" class="picker-btn" id="picker-btn" aria-haspopup="listbox" aria-expanded="false" aria-controls="picker-pop">
+          <span class="picker-label" id="picker-label">Loading&hellip;</span>
+          <span class="picker-code" id="picker-code"></span>
+          <span class="picker-caret" aria-hidden="true">&#9662;</span>
+        </button>
+        <div class="picker-pop" id="picker-pop" hidden>
+          <input type="search" id="picker-search" placeholder="Search 150 products — tornado, heat, SV.W&hellip;" autocomplete="off" aria-label="Search products" aria-controls="picker-list">
+          <div class="picker-list" id="picker-list" role="listbox" aria-label="Products"></div>
+        </div>
+      </div>
+      <div class="seg small" role="radiogroup" aria-label="Significance" id="sig-seg"></div>
+      <p class="note" id="product-note"></p>
+    </section>
+
+    <section class="block" aria-labelledby="h-measure">
+      <h2 id="h-measure">Measure</h2>
+      <div class="seg" role="radiogroup" aria-label="Measure" id="measure-seg">
+        <button type="button" role="radio" data-measure="days">Days in effect</button>
+        <button type="button" role="radio" data-measure="alerts">Alerts issued</button>
+      </div>
+      <p class="note" id="measure-note"></p>
+    </section>
+
+    <section class="block" aria-labelledby="h-years">
+      <h2 id="h-years">Years</h2>
+      <div class="chips" id="year-presets" role="group" aria-label="Year presets"></div>
+      <div class="date-row">
+        <label>From <select id="year-start"></select></label>
+        <label>To <select id="year-end"></select></label>
+      </div>
+      <div class="step-row">
+        <button type="button" class="btn icon" id="step-back" title="Earlier years (←)" aria-label="Earlier years">&#9664;</button>
+        <span class="range-label" id="range-label" aria-live="polite"></span>
+        <button type="button" class="btn icon" id="step-fwd" title="Later years (→)" aria-label="Later years">&#9654;</button>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="h-map">
+      <h2 id="h-map">Map</h2>
+      <div class="seg" role="radiogroup" aria-label="Map units, smallest to largest" id="unit-seg">
+        <button type="button" role="radio" data-unit="grid">5 km grid</button>
+        <button type="button" role="radio" data-unit="counties">Counties</button>
+        <button type="button" role="radio" data-unit="offices">Offices</button>
+      </div>
+      <div class="legend" id="legend" aria-live="polite"></div>
+    </section>
+
+    <section class="block" aria-labelledby="h-summary">
+      <h2 id="h-summary">At a glance</h2>
+      <div class="tiles" id="tiles"></div>
+    </section>
+
+    <section class="block" aria-labelledby="h-rank">
+      <h2 id="h-rank">Ranking</h2>
+      <div class="rank-tools">
+        <div class="finder">
+          <input type="search" id="find" placeholder="Find a county or office" autocomplete="off" aria-label="Find a county or office" aria-controls="find-list">
+          <ul class="find-list" id="find-list" role="listbox" hidden></ul>
+        </div>
+        <select id="state-filter" aria-label="Limit to a state"></select>
+      </div>
+      <ol class="rank-list" id="rank-list"></ol>
+      <button type="button" class="link-btn" id="rank-more" aria-expanded="false"></button>
+    </section>
+
+    <section class="block actions" aria-label="Share and download">
+      <button type="button" class="btn" id="copy-link">Copy link</button>
+      <button type="button" class="btn" id="save-png">Save image</button>
+      <button type="button" class="btn" id="download-csv">Download CSV</button>
+    </section>
+
+    <section class="block about">
+      <details>
+        <summary>About these data</summary>
+        <div id="about"></div>
+      </details>
+    </section>
+  </aside>
+
+  <main id="stage">
+    <div id="map" role="region" aria-label="Map of alert frequency"></div>
+    <div id="boot" class="boot">Loading the alert archive&hellip;</div>
+    <div id="busy" class="busy" hidden>Loading <span id="busy-text"></span>&hellip;</div>
+    <div id="toast" class="toast" role="status" hidden></div>
+    <div class="map-tools">
+      <div class="regions" id="regions" role="group" aria-label="Jump to region"></div>
+      <div class="basemaps" id="basemaps" role="radiogroup" aria-label="Base map"></div>
+    </div>
+    <div id="map-key" class="map-key" aria-live="polite" hidden></div>
+    <div id="hover-tip" class="tip map-tip" hidden></div>
+
+    <aside id="card" class="card" aria-live="polite" hidden>
+      <button type="button" class="card-close" id="card-close" aria-label="Close">&times;</button>
+      <p class="card-kicker" id="card-kicker"></p>
+      <h3 class="card-title" id="card-title"></h3>
+      <p class="card-sub" id="card-sub"></p>
+      <div class="card-hero">
+        <span class="card-value" id="card-value"></span>
+        <span class="card-unit" id="card-unit"></span>
+      </div>
+      <p class="card-other" id="card-other"></p>
+      <p class="card-rank" id="card-rank"></p>
+      <div class="card-chart">
+        <div class="card-chart-head"><span id="card-years-title">By year</span><span class="card-chart-max" id="card-years-max"></span></div>
+        <svg id="card-years" role="img" aria-label="Values by year"></svg>
+      </div>
+      <div class="card-chart" id="card-months-wrap">
+        <div class="card-chart-head"><span id="card-months-title">By month</span><span class="card-chart-max" id="card-months-max"></span></div>
+        <svg id="card-months" role="img" aria-label="Values by month"></svg>
+      </div>
+      <p class="card-foot" id="card-foot"></p>
+    </aside>
+
+    <section id="timeline-wrap" aria-label="Timeline">
+      <div class="timeline-head">
+        <span class="timeline-title" id="timeline-title">Alerts issued per month</span>
+        <span class="timeline-hint">Drag to choose years</span>
+        <span class="timeline-legend" id="timeline-legend"></span>
+      </div>
+      <div class="timeline-body">
+        <canvas id="timeline" tabindex="0" aria-label="Alerts issued each month nationwide. Drag to select years; arrow keys move the selection."></canvas>
+        <div id="timeline-tip" class="tip" hidden></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script type="module" src="./engine.js?v=__BUILD__"></script>
+</body>
+</html>

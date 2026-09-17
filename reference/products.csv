@@ -1,0 +1,113 @@
+PHENOM,SIG,label,group,include,note
+AF,Y,Ashfall Advisory,Other,TRUE,
+AQ,Y,Air Quality (not a VTEC product),Other,FALSE,One row in 2010; not a VTEC phenomenon code.
+AS,O,Air Stagnation Outlook,Other,FALSE,An outlook of possible conditions days ahead rather than an alert; left out.
+AS,Y,Air Stagnation Advisory,Other,TRUE,
+BH,S,Beach Hazards Statement,Coastal and lakeshore,TRUE,
+BW,Y,Brisk Wind Advisory,Marine,TRUE,
+BZ,A,Blizzard Watch,Winter,TRUE,Discontinued in 2017; Winter Storm Watches now cover blizzards.
+BZ,W,Blizzard Warning,Winter,TRUE,
+CF,A,Coastal Flood Watch,Coastal and lakeshore,TRUE,
+CF,S,Coastal Flood Statement,Coastal and lakeshore,TRUE,
+CF,W,Coastal Flood Warning,Coastal and lakeshore,TRUE,
+CF,Y,Coastal Flood Advisory,Coastal and lakeshore,TRUE,
+CW,Y,Cold Weather Advisory,Heat and cold,TRUE,Replaced the Wind Chill Advisory (WC.Y) under NWS Hazard Simplification.
+DS,W,Dust Storm Warning,"Dust, fog and smoke",TRUE,
+DS,Y,Dust Advisory,"Dust, fog and smoke",TRUE,
+DU,W,Blowing Dust Warning,"Dust, fog and smoke",TRUE,
+DU,Y,Blowing Dust Advisory,"Dust, fog and smoke",TRUE,
+EC,A,Extreme Cold Watch,Heat and cold,TRUE,Replaced the Wind Chill Watch (WC.A) under NWS Hazard Simplification.
+EC,W,Extreme Cold Warning,Heat and cold,TRUE,Replaced the Wind Chill Warning (WC.W) under NWS Hazard Simplification.
+EH,A,Excessive Heat Watch,Heat and cold,TRUE,Renamed Extreme Heat Watch (XH.A) under NWS Hazard Simplification.
+EH,W,Excessive Heat Warning,Heat and cold,TRUE,Renamed Extreme Heat Warning (XH.W) under NWS Hazard Simplification.
+EW,W,Extreme Wind Warning,Tropical,TRUE,
+FA,A,Flood Watch,Flooding,TRUE,Absorbed the Flash Flood Watch (FF.A) under NWS Hazard Simplification.
+FA,W,Flood Warning (areal),Flooding,TRUE,
+FA,Y,Flood Advisory (areal),Flooding,TRUE,
+FF,A,Flash Flood Watch,Flooding,TRUE,Folded into the Flood Watch (FA.A) under NWS Hazard Simplification.
+FF,W,Flash Flood Warning,Flooding,TRUE,
+FG,Y,Dense Fog Advisory,"Dust, fog and smoke",TRUE,
+FL,A,Flood Watch (river point),Flooding,TRUE,
+FL,S,Flood Statement (river point),Flooding,TRUE,
+FL,W,Flood Warning (river point),Flooding,TRUE,
+FL,Y,Flood Advisory (river point),Flooding,TRUE,
+FR,Y,Frost Advisory,Frost and freeze,TRUE,
+FW,A,Fire Weather Watch,Fire weather,TRUE,
+FW,W,Red Flag Warning,Fire weather,TRUE,
+FZ,A,Freeze Watch,Frost and freeze,TRUE,
+FZ,W,Freeze Warning,Frost and freeze,TRUE,
+GL,A,Gale Watch,Marine,TRUE,
+GL,W,Gale Warning,Marine,TRUE,
+HF,A,Hurricane Force Wind Watch,Marine,TRUE,
+HF,W,Hurricane Force Wind Warning,Marine,TRUE,
+HI,A,Inland Hurricane Watch,Tropical,TRUE,Retired in 2010; Hurricane Watches now cover inland areas.
+HI,W,Inland Hurricane Warning,Tropical,TRUE,Retired in 2010; Hurricane Warnings now cover inland areas.
+HT,Y,Heat Advisory,Heat and cold,TRUE,
+HU,A,Hurricane Watch,Tropical,TRUE,
+HU,S,Hurricane Local Statement,Tropical,TRUE,
+HU,W,Hurricane Warning,Tropical,TRUE,
+HW,A,High Wind Watch,Wind,TRUE,
+HW,W,High Wind Warning,Wind,TRUE,
+HY,S,Hydrologic Statement,Flooding,TRUE,
+HY,W,Hydrologic Warning,Flooding,TRUE,
+HY,Y,Hydrologic Advisory,Flooding,TRUE,
+HZ,A,Hard Freeze Watch,Frost and freeze,TRUE,
+HZ,W,Hard Freeze Warning,Frost and freeze,TRUE,
+IJ,Y,Unknown code IJ,Other,FALSE,One row in 2019; not a VTEC phenomenon code.
+IS,W,Ice Storm Warning,Winter,TRUE,
+LE,A,Lake Effect Snow Watch,Winter,TRUE,Discontinued in 2017; Winter Storm Watches now cover lake effect snow.
+LE,W,Lake Effect Snow Warning,Winter,TRUE,
+LE,Y,Lake Effect Snow Advisory,Winter,TRUE,Discontinued in 2017; Winter Weather Advisories now cover lake effect snow.
+LO,Y,Low Water Advisory,Marine,TRUE,
+LS,A,Lakeshore Flood Watch,Coastal and lakeshore,TRUE,
+LS,S,Lakeshore Flood Statement,Coastal and lakeshore,TRUE,
+LS,W,Lakeshore Flood Warning,Coastal and lakeshore,TRUE,
+LS,Y,Lakeshore Flood Advisory,Coastal and lakeshore,TRUE,
+LW,Y,Lake Wind Advisory,Wind,TRUE,
+MA,S,Marine Weather Statement,Marine,TRUE,
+MA,W,Special Marine Warning,Marine,TRUE,
+MF,Y,Dense Fog Advisory (marine),Marine,TRUE,
+MH,Y,Ashfall Advisory (marine),Marine,TRUE,
+MS,Y,Dense Smoke Advisory (marine),Marine,TRUE,
+RB,Y,Small Craft Advisory for Rough Bar,Marine,TRUE,
+RP,S,Rip Current Statement,Coastal and lakeshore,TRUE,
+SC,Y,Small Craft Advisory,Marine,TRUE,
+SE,A,Hazardous Seas Watch,Marine,TRUE,
+SE,W,Hazardous Seas Warning,Marine,TRUE,
+SI,Y,Small Craft Advisory for Winds,Marine,TRUE,
+SM,Y,Dense Smoke Advisory,"Dust, fog and smoke",TRUE,
+SQ,W,Snow Squall Warning,Winter,TRUE,
+SR,A,Storm Watch,Marine,TRUE,
+SR,W,Storm Warning,Marine,TRUE,
+SS,A,Storm Surge Watch,Tropical,TRUE,
+SS,W,Storm Surge Warning,Tropical,TRUE,
+SU,W,High Surf Warning,Coastal and lakeshore,TRUE,
+SU,Y,High Surf Advisory,Coastal and lakeshore,TRUE,
+SV,A,Severe Thunderstorm Watch,Severe storms,TRUE,
+SV,W,Severe Thunderstorm Warning,Severe storms,TRUE,
+SW,Y,Small Craft Advisory for Hazardous Seas,Marine,TRUE,
+TI,A,Inland Tropical Storm Watch,Tropical,TRUE,Retired in 2010; Tropical Storm Watches now cover inland areas.
+TI,W,Inland Tropical Storm Warning,Tropical,TRUE,Retired in 2010; Tropical Storm Warnings now cover inland areas.
+TO,A,Tornado Watch,Severe storms,TRUE,
+TO,W,Tornado Warning,Severe storms,TRUE,
+TR,A,Tropical Storm Watch,Tropical,TRUE,
+TR,W,Tropical Storm Warning,Tropical,TRUE,
+TS,A,Tsunami Watch,Tsunami,TRUE,
+TS,W,Tsunami Warning,Tsunami,TRUE,
+TS,Y,Tsunami Advisory,Tsunami,TRUE,
+TY,A,Typhoon Watch,Tropical,TRUE,
+TY,W,Typhoon Warning,Tropical,TRUE,
+UP,A,Heavy Freezing Spray Watch,Marine,TRUE,
+UP,W,Heavy Freezing Spray Warning,Marine,TRUE,
+UP,Y,Freezing Spray Advisory,Marine,TRUE,
+WC,A,Wind Chill Watch,Heat and cold,TRUE,Replaced by the Extreme Cold Watch (EC.A) under NWS Hazard Simplification.
+WC,W,Wind Chill Warning,Heat and cold,TRUE,Replaced by the Extreme Cold Warning (EC.W) under NWS Hazard Simplification.
+WC,Y,Wind Chill Advisory,Heat and cold,TRUE,Replaced by the Cold Weather Advisory (CW.Y) under NWS Hazard Simplification.
+WI,Y,Wind Advisory,Wind,TRUE,
+WS,A,Winter Storm Watch,Winter,TRUE,
+WS,W,Winter Storm Warning,Winter,TRUE,
+WW,Y,Winter Weather Advisory,Winter,TRUE,
+XH,A,Extreme Heat Watch,Heat and cold,TRUE,Replaced the Excessive Heat Watch (EH.A) under NWS Hazard Simplification.
+XH,W,Extreme Heat Warning,Heat and cold,TRUE,Replaced the Excessive Heat Warning (EH.W) under NWS Hazard Simplification.
+ZF,Y,Freezing Fog Advisory,"Dust, fog and smoke",TRUE,
+ZR,Y,Freezing Rain Advisory,Winter,TRUE,Discontinued in 2017; Winter Weather Advisories now cover freezing rain.
