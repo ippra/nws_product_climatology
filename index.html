@@ -13,9 +13,9 @@ if(!/\/$/.test(p)&&!/\.html$/.test(p)){location.replace(p+"/"+location.search+lo
 <meta name="description" content="How often the National Weather Service puts each U.S. county under every kind of watch, warning and advisory, 2010 to 2025.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='3' y='3' width='12' height='12' rx='2' fill='%239ec5f4'/%3E%3Crect x='17' y='3' width='12' height='12' rx='2' fill='%233987e5'/%3E%3Crect x='3' y='17' width='12' height='12' rx='2' fill='%23184f95'/%3E%3Crect x='17' y='17' width='12' height='12' rx='2' fill='%230d366b'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="./assets/vendor/maplibre-gl-6.10.0/maplibre-gl.css">
-<link rel="stylesheet" href="./engine.css?v=202609171339">
+<link rel="stylesheet" href="./engine.css?v=202609171347">
 <script>
-window.NAC_BUILD = "202609171339";
+window.NAC_BUILD = "202609171347";
 // Watchdog: if the app never leaves the loading screen, say what failed rather
 // than leaving a blank map.
 window.__nacFailed = [];
@@ -190,7 +190,6 @@ window.addEventListener("load", function () { setTimeout(function () {
       <div class="regions" id="regions" role="group" aria-label="Jump to region"></div>
       <div class="basemaps" id="basemaps" role="radiogroup" aria-label="Base map"></div>
     </div>
-    <div id="map-key" class="map-key" aria-live="polite" hidden></div>
     <div id="hover-tip" class="tip map-tip" hidden></div>
 
     <aside id="card" class="card" aria-live="polite" hidden>
@@ -216,6 +215,7 @@ window.addEventListener("load", function () { setTimeout(function () {
     </aside>
 
     <section id="timeline-wrap" aria-label="Timeline">
+      <div id="map-key" class="map-key" aria-live="polite" hidden></div>
       <div class="timeline-head">
         <span class="timeline-title" id="timeline-title">Alerts issued per month</span>
         <span class="timeline-hint">Drag to choose years</span>
@@ -229,6 +229,6 @@ window.addEventListener("load", function () { setTimeout(function () {
   </main>
 </div>
 
-<script type="module" src="./engine.js?v=202609171339"></script>
+<script type="module" src="./engine.js?v=202609171347"></script>
 </body>
 </html>
