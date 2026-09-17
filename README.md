@@ -277,6 +277,20 @@ Pages.
 - The grid files are already gzipped. A host may serve them as they are or with
   `Content-Encoding: gzip`; the page handles both.
 
+### GitHub Pages
+
+The built site is published from the `gh-pages` branch, which holds only the
+contents of `outputs/06_site/` plus an empty `.nojekyll`. The archive the
+pipeline needs lives on the build machine, not in the repository, so GitHub
+cannot rebuild the site itself. To republish after a rebuild:
+
+```sh
+git clone --branch gh-pages https://github.com/ippra/nws_product_climatology.git /tmp/nac-pages
+rsync -a --delete --exclude .git outputs/06_site/ /tmp/nac-pages/
+touch /tmp/nac-pages/.nojekyll
+git -C /tmp/nac-pages add -A && git -C /tmp/nac-pages commit -m "Publish site" && git -C /tmp/nac-pages push
+```
+
 `06_build_dashboard.R` builds into `outputs/06_site.next` and swaps it in, so a
 host serving `outputs/06_site` never sees a half-copied site.
 
